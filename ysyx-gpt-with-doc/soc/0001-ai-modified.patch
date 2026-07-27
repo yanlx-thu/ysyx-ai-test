@@ -1,0 +1,972 @@
+From e6d32184788520bfa6838ddd19bd0a94e6efc7a1 Mon Sep 17 00:00:00 2001
+From: 201101121-Lingxiao Yan <3599153691@qq.com>
+Date: Mon, 27 Jul 2026 14:56:18 +0800
+Subject: [PATCH] ai-modified
+
+---
+ .gitignore                                   |   0
+ .gitmodules                                  |   0
+ .mill-version                                |   0
+ Makefile                                     |   0
+ build.sc                                     |   0
+ patch/rocket-chip.patch                      |   0
+ perip/.gitignore                             |   0
+ perip/amba/apb_delayer.v                     |   0
+ perip/amba/axi4_delayer.v                    |   0
+ perip/bitrev/bitrev.v                        |   0
+ perip/flash/flash.v                          |   0
+ perip/gpio/gpio_top_apb.v                    |   0
+ perip/ps2/ps2_top_apb.v                      |   0
+ perip/psram/efabless/EF_PSRAM_CTRL.v         |   0
+ perip/psram/efabless/EF_PSRAM_CTRL_wb.v      |   0
+ perip/psram/efabless/LICENSE                 |   0
+ perip/psram/psram.v                          |   0
+ perip/psram/psram_top_apb.v                  |   0
+ perip/sdram/core_sdram_axi4/LICENSE          |   0
+ perip/sdram/core_sdram_axi4/README.md        |   0
+ perip/sdram/core_sdram_axi4/sdram_axi.v      |   0
+ perip/sdram/core_sdram_axi4/sdram_axi_core.v |   0
+ perip/sdram/core_sdram_axi4/sdram_axi_pmem.v |   0
+ perip/sdram/sdram.v                          |   0
+ perip/sdram/sdram_top_apb.v                  |  36 ++
+ perip/sdram/sdram_top_axi.v                  |   0
+ perip/spi/doc/spi.pdf                        | Bin
+ perip/spi/rtl/spi_clgen.v                    |   0
+ perip/spi/rtl/spi_defines.v                  |   0
+ perip/spi/rtl/spi_shift.v                    |   0
+ perip/spi/rtl/spi_top.v                      |   0
+ perip/spi/rtl/spi_top_apb.v                  |  14 +-
+ perip/uart16550/doc/UART_spec.pdf            | Bin
+ perip/uart16550/rtl/raminfr.v                |   0
+ perip/uart16550/rtl/uart_defines.v           |   0
+ perip/uart16550/rtl/uart_receiver.v          |   0
+ perip/uart16550/rtl/uart_regs.v              |   7 +
+ perip/uart16550/rtl/uart_rfifo.v             |   0
+ perip/uart16550/rtl/uart_sync_flops.v        |   0
+ perip/uart16550/rtl/uart_tfifo.v             |   0
+ perip/uart16550/rtl/uart_top_apb.v           |   0
+ perip/uart16550/rtl/uart_transmitter.v       |   0
+ perip/vga/vga_top_apb.v                      |   0
+ ready-to-run/D-stage/.gitignore              |   0
+ ready-to-run/D-stage/cpu-interface.md        |   0
+ ready-to-run/D-stage/gen.sh                  |   0
+ ready-to-run/D-stage/ysyxSoCFull.v           | 378 +++++++------------
+ spec/cpu-interface.md                        |   0
+ src/CPU.scala                                |   0
+ src/SoC.scala                                |   0
+ src/Top.scala                                |   0
+ src/amba/APBDelayer.scala                    |   0
+ src/amba/AXI4Delayer.scala                   |   0
+ src/amba/AXI4ToAPB.scala                     |   0
+ src/chiplink/Bundles.scala                   |   0
+ src/chiplink/CAM.scala                       |   0
+ src/chiplink/ChipLink.scala                  |   0
+ src/chiplink/Parameters.scala                |   0
+ src/chiplink/Partial.scala                   |   0
+ src/chiplink/RX.scala                        |   0
+ src/chiplink/SinkA.scala                     |   0
+ src/chiplink/SinkB.scala                     |   0
+ src/chiplink/SinkC.scala                     |   0
+ src/chiplink/SinkD.scala                     |   0
+ src/chiplink/SinkE.scala                     |   0
+ src/chiplink/SourceA.scala                   |   0
+ src/chiplink/SourceB.scala                   |   0
+ src/chiplink/SourceC.scala                   |   0
+ src/chiplink/SourceD.scala                   |   0
+ src/chiplink/SourceE.scala                   |   0
+ src/chiplink/StuckSnooper.scala              |   0
+ src/chiplink/TX.scala                        |   0
+ src/device/BitRev.scala                      |   0
+ src/device/ChipLinkBridge.scala              |   0
+ src/device/GPIO.scala                        |   0
+ src/device/Keyboard.scala                    |   0
+ src/device/MROM.scala                        |   0
+ src/device/PSRAM.scala                       |   0
+ src/device/SDRAM.scala                       |   0
+ src/device/SPI.scala                         |   0
+ src/device/Uart16550.scala                   |   0
+ src/device/VGA.scala                         |   0
+ src/util/TriState.scala                      |   0
+ 83 files changed, 200 insertions(+), 235 deletions(-)
+ mode change 100644 => 100755 .gitignore
+ mode change 100644 => 100755 .gitmodules
+ mode change 100644 => 100755 .mill-version
+ mode change 100644 => 100755 Makefile
+ mode change 100644 => 100755 build.sc
+ mode change 100644 => 100755 patch/rocket-chip.patch
+ mode change 100644 => 100755 perip/.gitignore
+ mode change 100644 => 100755 perip/amba/apb_delayer.v
+ mode change 100644 => 100755 perip/amba/axi4_delayer.v
+ mode change 100644 => 100755 perip/bitrev/bitrev.v
+ mode change 100644 => 100755 perip/flash/flash.v
+ mode change 100644 => 100755 perip/gpio/gpio_top_apb.v
+ mode change 100644 => 100755 perip/ps2/ps2_top_apb.v
+ mode change 100644 => 100755 perip/psram/efabless/EF_PSRAM_CTRL.v
+ mode change 100644 => 100755 perip/psram/efabless/EF_PSRAM_CTRL_wb.v
+ mode change 100644 => 100755 perip/psram/efabless/LICENSE
+ mode change 100644 => 100755 perip/psram/psram.v
+ mode change 100644 => 100755 perip/psram/psram_top_apb.v
+ mode change 100644 => 100755 perip/sdram/core_sdram_axi4/LICENSE
+ mode change 100644 => 100755 perip/sdram/core_sdram_axi4/README.md
+ mode change 100644 => 100755 perip/sdram/core_sdram_axi4/sdram_axi.v
+ mode change 100644 => 100755 perip/sdram/core_sdram_axi4/sdram_axi_core.v
+ mode change 100644 => 100755 perip/sdram/core_sdram_axi4/sdram_axi_pmem.v
+ mode change 100644 => 100755 perip/sdram/sdram.v
+ mode change 100644 => 100755 perip/sdram/sdram_top_apb.v
+ mode change 100644 => 100755 perip/sdram/sdram_top_axi.v
+ mode change 100644 => 100755 perip/spi/doc/spi.pdf
+ mode change 100644 => 100755 perip/spi/rtl/spi_clgen.v
+ mode change 100644 => 100755 perip/spi/rtl/spi_defines.v
+ mode change 100644 => 100755 perip/spi/rtl/spi_shift.v
+ mode change 100644 => 100755 perip/spi/rtl/spi_top.v
+ mode change 100644 => 100755 perip/spi/rtl/spi_top_apb.v
+ mode change 100644 => 100755 perip/uart16550/doc/UART_spec.pdf
+ mode change 100644 => 100755 perip/uart16550/rtl/raminfr.v
+ mode change 100644 => 100755 perip/uart16550/rtl/uart_defines.v
+ mode change 100644 => 100755 perip/uart16550/rtl/uart_receiver.v
+ mode change 100644 => 100755 perip/uart16550/rtl/uart_regs.v
+ mode change 100644 => 100755 perip/uart16550/rtl/uart_rfifo.v
+ mode change 100644 => 100755 perip/uart16550/rtl/uart_sync_flops.v
+ mode change 100644 => 100755 perip/uart16550/rtl/uart_tfifo.v
+ mode change 100644 => 100755 perip/uart16550/rtl/uart_top_apb.v
+ mode change 100644 => 100755 perip/uart16550/rtl/uart_transmitter.v
+ mode change 100644 => 100755 perip/vga/vga_top_apb.v
+ mode change 100644 => 100755 ready-to-run/D-stage/.gitignore
+ mode change 100644 => 100755 ready-to-run/D-stage/cpu-interface.md
+ mode change 100644 => 100755 ready-to-run/D-stage/gen.sh
+ mode change 100644 => 100755 ready-to-run/D-stage/ysyxSoCFull.v
+ mode change 100644 => 100755 spec/cpu-interface.md
+ mode change 100644 => 100755 src/CPU.scala
+ mode change 100644 => 100755 src/SoC.scala
+ mode change 100644 => 100755 src/Top.scala
+ mode change 100644 => 100755 src/amba/APBDelayer.scala
+ mode change 100644 => 100755 src/amba/AXI4Delayer.scala
+ mode change 100644 => 100755 src/amba/AXI4ToAPB.scala
+ mode change 100644 => 100755 src/chiplink/Bundles.scala
+ mode change 100644 => 100755 src/chiplink/CAM.scala
+ mode change 100644 => 100755 src/chiplink/ChipLink.scala
+ mode change 100644 => 100755 src/chiplink/Parameters.scala
+ mode change 100644 => 100755 src/chiplink/Partial.scala
+ mode change 100644 => 100755 src/chiplink/RX.scala
+ mode change 100644 => 100755 src/chiplink/SinkA.scala
+ mode change 100644 => 100755 src/chiplink/SinkB.scala
+ mode change 100644 => 100755 src/chiplink/SinkC.scala
+ mode change 100644 => 100755 src/chiplink/SinkD.scala
+ mode change 100644 => 100755 src/chiplink/SinkE.scala
+ mode change 100644 => 100755 src/chiplink/SourceA.scala
+ mode change 100644 => 100755 src/chiplink/SourceB.scala
+ mode change 100644 => 100755 src/chiplink/SourceC.scala
+ mode change 100644 => 100755 src/chiplink/SourceD.scala
+ mode change 100644 => 100755 src/chiplink/SourceE.scala
+ mode change 100644 => 100755 src/chiplink/StuckSnooper.scala
+ mode change 100644 => 100755 src/chiplink/TX.scala
+ mode change 100644 => 100755 src/device/BitRev.scala
+ mode change 100644 => 100755 src/device/ChipLinkBridge.scala
+ mode change 100644 => 100755 src/device/GPIO.scala
+ mode change 100644 => 100755 src/device/Keyboard.scala
+ mode change 100644 => 100755 src/device/MROM.scala
+ mode change 100644 => 100755 src/device/PSRAM.scala
+ mode change 100644 => 100755 src/device/SDRAM.scala
+ mode change 100644 => 100755 src/device/SPI.scala
+ mode change 100644 => 100755 src/device/Uart16550.scala
+ mode change 100644 => 100755 src/device/VGA.scala
+ mode change 100644 => 100755 src/util/TriState.scala
+
+diff --git a/.gitignore b/.gitignore
+old mode 100644
+new mode 100755
+diff --git a/.gitmodules b/.gitmodules
+old mode 100644
+new mode 100755
+diff --git a/.mill-version b/.mill-version
+old mode 100644
+new mode 100755
+diff --git a/Makefile b/Makefile
+old mode 100644
+new mode 100755
+diff --git a/build.sc b/build.sc
+old mode 100644
+new mode 100755
+diff --git a/patch/rocket-chip.patch b/patch/rocket-chip.patch
+old mode 100644
+new mode 100755
+diff --git a/perip/.gitignore b/perip/.gitignore
+old mode 100644
+new mode 100755
+diff --git a/perip/amba/apb_delayer.v b/perip/amba/apb_delayer.v
+old mode 100644
+new mode 100755
+diff --git a/perip/amba/axi4_delayer.v b/perip/amba/axi4_delayer.v
+old mode 100644
+new mode 100755
+diff --git a/perip/bitrev/bitrev.v b/perip/bitrev/bitrev.v
+old mode 100644
+new mode 100755
+diff --git a/perip/flash/flash.v b/perip/flash/flash.v
+old mode 100644
+new mode 100755
+diff --git a/perip/gpio/gpio_top_apb.v b/perip/gpio/gpio_top_apb.v
+old mode 100644
+new mode 100755
+diff --git a/perip/ps2/ps2_top_apb.v b/perip/ps2/ps2_top_apb.v
+old mode 100644
+new mode 100755
+diff --git a/perip/psram/efabless/EF_PSRAM_CTRL.v b/perip/psram/efabless/EF_PSRAM_CTRL.v
+old mode 100644
+new mode 100755
+diff --git a/perip/psram/efabless/EF_PSRAM_CTRL_wb.v b/perip/psram/efabless/EF_PSRAM_CTRL_wb.v
+old mode 100644
+new mode 100755
+diff --git a/perip/psram/efabless/LICENSE b/perip/psram/efabless/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/perip/psram/psram.v b/perip/psram/psram.v
+old mode 100644
+new mode 100755
+diff --git a/perip/psram/psram_top_apb.v b/perip/psram/psram_top_apb.v
+old mode 100644
+new mode 100755
+diff --git a/perip/sdram/core_sdram_axi4/LICENSE b/perip/sdram/core_sdram_axi4/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/perip/sdram/core_sdram_axi4/README.md b/perip/sdram/core_sdram_axi4/README.md
+old mode 100644
+new mode 100755
+diff --git a/perip/sdram/core_sdram_axi4/sdram_axi.v b/perip/sdram/core_sdram_axi4/sdram_axi.v
+old mode 100644
+new mode 100755
+diff --git a/perip/sdram/core_sdram_axi4/sdram_axi_core.v b/perip/sdram/core_sdram_axi4/sdram_axi_core.v
+old mode 100644
+new mode 100755
+diff --git a/perip/sdram/core_sdram_axi4/sdram_axi_pmem.v b/perip/sdram/core_sdram_axi4/sdram_axi_pmem.v
+old mode 100644
+new mode 100755
+diff --git a/perip/sdram/sdram.v b/perip/sdram/sdram.v
+old mode 100644
+new mode 100755
+diff --git a/perip/sdram/sdram_top_apb.v b/perip/sdram/sdram_top_apb.v
+old mode 100644
+new mode 100755
+index 3bc5b93b..393fabfd
+--- a/perip/sdram/sdram_top_apb.v
++++ b/perip/sdram/sdram_top_apb.v
+@@ -24,6 +24,41 @@ module sdram_top_apb (
+   inout  [15:0] sdram_dq
+ );
+ 
++`ifdef FAST_SDRAM
++  import "DPI-C" function int soc_sdram_read(input int addr);
++  import "DPI-C" function void soc_sdram_write(input int addr, input int data, input int strb);
++
++  reg [31:0] read_data;
++  wire       req_fire = in_psel && !in_penable;
++
++  always @(posedge clock) begin
++    if (reset)
++      read_data <= 32'b0;
++    else if (req_fire) begin
++      if (in_pwrite) begin
++        soc_sdram_write(in_paddr, in_pwdata, {28'b0, in_pstrb});
++        read_data <= 32'b0;
++      end
++      else
++        read_data <= soc_sdram_read(in_paddr);
++    end
++  end
++
++  assign in_pready = in_psel && in_penable;
++  assign in_prdata = read_data;
++  assign in_pslverr = 1'b0;
++
++  assign sdram_clk = 1'b0;
++  assign sdram_cke = 1'b0;
++  assign sdram_cs = 1'b1;
++  assign sdram_ras = 1'b1;
++  assign sdram_cas = 1'b1;
++  assign sdram_we = 1'b1;
++  assign sdram_a = 13'b0;
++  assign sdram_ba = 2'b0;
++  assign sdram_dqm = 2'b0;
++  assign sdram_dq = 16'bz;
++`else
+   wire sdram_dout_en;
+   wire [15:0] sdram_dout;
+   assign sdram_dq = sdram_dout_en ? sdram_dout : 16'bz;
+@@ -77,4 +112,5 @@ module sdram_top_apb (
+     .sdram_data_out_en_o(sdram_dout_en)
+   );
+ 
++`endif
+ endmodule
+diff --git a/perip/sdram/sdram_top_axi.v b/perip/sdram/sdram_top_axi.v
+old mode 100644
+new mode 100755
+diff --git a/perip/spi/doc/spi.pdf b/perip/spi/doc/spi.pdf
+old mode 100644
+new mode 100755
+diff --git a/perip/spi/rtl/spi_clgen.v b/perip/spi/rtl/spi_clgen.v
+old mode 100644
+new mode 100755
+diff --git a/perip/spi/rtl/spi_defines.v b/perip/spi/rtl/spi_defines.v
+old mode 100644
+new mode 100755
+diff --git a/perip/spi/rtl/spi_shift.v b/perip/spi/rtl/spi_shift.v
+old mode 100644
+new mode 100755
+diff --git a/perip/spi/rtl/spi_top.v b/perip/spi/rtl/spi_top.v
+old mode 100644
+new mode 100755
+diff --git a/perip/spi/rtl/spi_top_apb.v b/perip/spi/rtl/spi_top_apb.v
+old mode 100644
+new mode 100755
+index 92d37516..483edae1
+--- a/perip/spi/rtl/spi_top_apb.v
++++ b/perip/spi/rtl/spi_top_apb.v
+@@ -29,21 +29,31 @@ module spi_top_apb #(
+ 
+ `ifdef FAST_FLASH
+ 
++import "DPI-C" function void flash_write(input int addr, input int data, input int strb);
++
+ wire [31:0] data;
++wire [31:0] flash_addr = {8'b0, in_paddr[23:2], 2'b0};
+ parameter invalid_cmd = 8'h0;
+ flash_cmd flash_cmd_i(
+   .clock(clock),
+   .valid(in_psel && !in_penable),
+   .cmd(in_pwrite ? invalid_cmd : 8'h03),
+-  .addr({8'b0, in_paddr[23:2], 2'b0}),
++  .addr(flash_addr),
+   .data(data)
+ );
++
++always @(posedge clock) begin
++  if (in_psel && !in_penable && in_pwrite) begin
++    flash_write(flash_addr, in_pwdata, {28'b0, in_pstrb});
++  end
++end
++
+ assign spi_sck    = 1'b0;
+ assign spi_ss     = 8'b0;
+ assign spi_mosi   = 1'b1;
+ assign spi_irq_out= 1'b0;
+ assign in_pslverr = 1'b0;
+-assign in_pready  = in_penable && in_psel && !in_pwrite;
++assign in_pready  = in_penable && in_psel;
+ assign in_prdata  = data[31:0];
+ 
+ `else
+diff --git a/perip/uart16550/doc/UART_spec.pdf b/perip/uart16550/doc/UART_spec.pdf
+old mode 100644
+new mode 100755
+diff --git a/perip/uart16550/rtl/raminfr.v b/perip/uart16550/rtl/raminfr.v
+old mode 100644
+new mode 100755
+diff --git a/perip/uart16550/rtl/uart_defines.v b/perip/uart16550/rtl/uart_defines.v
+old mode 100644
+new mode 100755
+diff --git a/perip/uart16550/rtl/uart_receiver.v b/perip/uart16550/rtl/uart_receiver.v
+old mode 100644
+new mode 100755
+diff --git a/perip/uart16550/rtl/uart_regs.v b/perip/uart16550/rtl/uart_regs.v
+old mode 100644
+new mode 100755
+index b48d1d6c..d55251f3
+--- a/perip/uart16550/rtl/uart_regs.v
++++ b/perip/uart16550/rtl/uart_regs.v
+@@ -229,6 +229,8 @@
+ 
+ `include "uart_defines.v"
+ 
++import "DPI-C" function void soc_uart_putc(input int ch);
++
+ `define UART_DL1 7:0
+ `define UART_DL2 15:8
+ 
+@@ -447,6 +449,11 @@ assign msr_read = (wb_re_i && wb_addr_i == `UART_REG_MS && !dlab);
+ assign fifo_read = (wb_re_i && wb_addr_i == `UART_REG_RB && !dlab);
+ assign fifo_write = (wb_we_i && wb_addr_i == `UART_REG_TR && !dlab);
+ 
++always @(posedge clk) begin
++    if (fifo_write)
++        soc_uart_putc({24'b0, wb_dat_i});
++end
++
+ // lsr_mask_d delayed signal handling
+ always @(posedge clk or posedge wb_rst_i)
+ begin
+diff --git a/perip/uart16550/rtl/uart_rfifo.v b/perip/uart16550/rtl/uart_rfifo.v
+old mode 100644
+new mode 100755
+diff --git a/perip/uart16550/rtl/uart_sync_flops.v b/perip/uart16550/rtl/uart_sync_flops.v
+old mode 100644
+new mode 100755
+diff --git a/perip/uart16550/rtl/uart_tfifo.v b/perip/uart16550/rtl/uart_tfifo.v
+old mode 100644
+new mode 100755
+diff --git a/perip/uart16550/rtl/uart_top_apb.v b/perip/uart16550/rtl/uart_top_apb.v
+old mode 100644
+new mode 100755
+diff --git a/perip/uart16550/rtl/uart_transmitter.v b/perip/uart16550/rtl/uart_transmitter.v
+old mode 100644
+new mode 100755
+diff --git a/perip/vga/vga_top_apb.v b/perip/vga/vga_top_apb.v
+old mode 100644
+new mode 100755
+diff --git a/ready-to-run/D-stage/.gitignore b/ready-to-run/D-stage/.gitignore
+old mode 100644
+new mode 100755
+diff --git a/ready-to-run/D-stage/cpu-interface.md b/ready-to-run/D-stage/cpu-interface.md
+old mode 100644
+new mode 100755
+diff --git a/ready-to-run/D-stage/gen.sh b/ready-to-run/D-stage/gen.sh
+old mode 100644
+new mode 100755
+diff --git a/ready-to-run/D-stage/ysyxSoCFull.v b/ready-to-run/D-stage/ysyxSoCFull.v
+old mode 100644
+new mode 100755
+index b1308b52..edb92c49
+--- a/ready-to-run/D-stage/ysyxSoCFull.v
++++ b/ready-to-run/D-stage/ysyxSoCFull.v
+@@ -153,12 +153,13 @@ module APBFanout(
+   input  [31:0] auto_anon_out_0_prdata
+ );
+ 
+-  wire sel_0 =
++  wire sel_2 =
++    auto_anon_in_paddr[31] | (auto_anon_in_paddr[31:20] == 12'h0F0);
++  wire sel_1 = auto_anon_in_paddr[31:12] == 20'h10000;
++  wire sel_0_raw =
+     {auto_anon_in_paddr[31], auto_anon_in_paddr[29], ~(auto_anon_in_paddr[12])} == 3'h0
+     | {auto_anon_in_paddr[31], ~(auto_anon_in_paddr[29])} == 2'h0;
+-  wire sel_1 =
+-    {auto_anon_in_paddr[31], auto_anon_in_paddr[29], auto_anon_in_paddr[12]} == 3'h0;
+-  wire sel_2 = {~(auto_anon_in_paddr[31]), auto_anon_in_paddr[29]} == 2'h0;
++  wire sel_0 = sel_0_raw & ~sel_1 & ~sel_2;
+   assign auto_anon_in_pready =
+     ~(sel_0 & ~auto_anon_out_0_pready | sel_1 & ~auto_anon_out_1_pready | sel_2
+       & ~auto_anon_out_2_pready);
+@@ -234,153 +235,6 @@ endmodule
+     `define INIT_RANDOM_PROLOG_
+   `endif // RANDOMIZE
+ `endif // not def INIT_RANDOM_PROLOG_
+-module MemBridge(
+-  input         clock,
+-                reset,
+-  input  [31:0] io_ifu_addr,
+-  input         io_ifu_reqValid,
+-  output [31:0] io_ifu_rdata,
+-  output        io_ifu_respValid,
+-  input  [31:0] io_lsu_addr,
+-  input         io_lsu_reqValid,
+-  output [31:0] io_lsu_rdata,
+-  output        io_lsu_respValid,
+-  input  [1:0]  io_lsu_size,
+-  input         io_lsu_wen,
+-  input  [31:0] io_lsu_wdata,
+-  input  [3:0]  io_lsu_wmask,
+-  input         io_master_awready,
+-  output        io_master_awvalid,
+-  output [3:0]  io_master_awid,
+-  output [31:0] io_master_awaddr,
+-  output [7:0]  io_master_awlen,
+-  output [2:0]  io_master_awsize,
+-  output [1:0]  io_master_awburst,
+-  input         io_master_wready,
+-  output        io_master_wvalid,
+-  output [31:0] io_master_wdata,
+-  output [3:0]  io_master_wstrb,
+-  output        io_master_wlast,
+-                io_master_bready,
+-  input         io_master_bvalid,
+-  input  [3:0]  io_master_bid,
+-  input  [1:0]  io_master_bresp,
+-  input         io_master_arready,
+-  output        io_master_arvalid,
+-  output [3:0]  io_master_arid,
+-  output [31:0] io_master_araddr,
+-  output [7:0]  io_master_arlen,
+-  output [2:0]  io_master_arsize,
+-  output [1:0]  io_master_arburst,
+-  output        io_master_rready,
+-  input         io_master_rvalid,
+-  input  [3:0]  io_master_rid,
+-  input  [31:0] io_master_rdata,
+-  input  [1:0]  io_master_rresp,
+-  input         io_master_rlast
+-);
+-
+-  wire        isValidLoad = io_lsu_reqValid & ~io_lsu_wen;
+-  wire        isValidStore = io_lsu_reqValid & io_lsu_wen;
+-  reg  [1:0]  stateI;
+-  wire        _io_master_arvalid_T = stateI == 2'h0;
+-  wire        _io_master_arvalid_T_2 = stateI == 2'h1;
+-  wire        _instReturn_T = stateI == 2'h2;
+-  reg  [2:0]  stateD;
+-  wire        _io_master_wvalid_T = stateD == 3'h0;
+-  wire        _lsuRead_T_2 = stateD == 3'h1;
+-  wire        _io_lsu_respValid_T = stateD == 3'h2;
+-  wire        _io_master_awvalid_T_2 = stateD == 3'h3;
+-  wire        _io_master_awvalid_T_3 = stateD == 3'h5;
+-  wire        _io_master_wvalid_T_2 = stateD == 3'h4;
+-  wire        io_master_bready_0 = stateD == 3'h6;
+-  wire        lsuRead = _io_master_wvalid_T & isValidLoad | _lsuRead_T_2;
+-  wire        instReturn = io_master_rvalid & _instReturn_T;
+-  reg  [31:0] io_ifu_rdata_r;
+-  always @(posedge clock) begin
+-    if (reset) begin
+-      stateI <= 2'h0;
+-      stateD <= 3'h0;
+-    end
+-    else begin
+-      automatic logic [1:0] _stateD_T_22 = io_master_arready ? 2'h2 : 2'h1;
+-      automatic logic [1:0] _stateD_T_24 = {~io_master_rvalid, 1'h0};
+-      automatic logic [2:0] _stateD_T_30 = {1'h1, io_master_wready, 1'h0};
+-      automatic logic [2:0] _stateD_T_21 =
+-        _io_master_wvalid_T
+-          ? (isValidLoad
+-               ? {1'h0, _stateD_T_22}
+-               : isValidStore
+-                   ? (io_master_awready ? _stateD_T_30 : io_master_wready ? 3'h5 : 3'h3)
+-                   : 3'h0)
+-          : 3'h0;
+-      stateI <=
+-        (_io_master_arvalid_T & io_ifu_reqValid | _io_master_arvalid_T_2
+-           ? _stateD_T_22
+-           : 2'h0) | (_instReturn_T ? _stateD_T_24 : 2'h0);
+-      stateD <=
+-        {_stateD_T_21[2],
+-         _stateD_T_21[1:0] | (_lsuRead_T_2 ? _stateD_T_22 : 2'h0)
+-           | (_io_lsu_respValid_T ? _stateD_T_24 : 2'h0)}
+-        | (_io_master_awvalid_T_2 ? (io_master_awready ? _stateD_T_30 : 3'h3) : 3'h0)
+-        | (_io_master_awvalid_T_3 ? (io_master_awready ? 3'h6 : 3'h5) : 3'h0)
+-        | (_io_master_wvalid_T_2 ? _stateD_T_30 : 3'h0)
+-        | (~io_master_bready_0 | io_master_bvalid ? 3'h0 : 3'h6);
+-    end
+-    if (instReturn)
+-      io_ifu_rdata_r <= io_master_rdata;
+-  end // always @(posedge)
+-  `ifdef ENABLE_INITIAL_REG_
+-    `ifdef FIRRTL_BEFORE_INITIAL
+-      `FIRRTL_BEFORE_INITIAL
+-    `endif // FIRRTL_BEFORE_INITIAL
+-    initial begin
+-      automatic logic [31:0] _RANDOM[0:1];
+-      `ifdef INIT_RANDOM_PROLOG_
+-        `INIT_RANDOM_PROLOG_
+-      `endif // INIT_RANDOM_PROLOG_
+-      `ifdef RANDOMIZE_REG_INIT
+-        for (logic [1:0] i = 2'h0; i < 2'h2; i += 2'h1) begin
+-          _RANDOM[i[0]] = `RANDOM;
+-        end
+-        stateI = _RANDOM[1'h0][1:0];
+-        stateD = _RANDOM[1'h0][4:2];
+-        io_ifu_rdata_r = {_RANDOM[1'h0][31:5], _RANDOM[1'h1][4:0]};
+-      `endif // RANDOMIZE_REG_INIT
+-    end // initial
+-    `ifdef FIRRTL_AFTER_INITIAL
+-      `FIRRTL_AFTER_INITIAL
+-    `endif // FIRRTL_AFTER_INITIAL
+-  `endif // ENABLE_INITIAL_REG_
+-  assign io_ifu_rdata = instReturn ? io_master_rdata : io_ifu_rdata_r;
+-  assign io_ifu_respValid = instReturn;
+-  assign io_lsu_rdata = io_master_rdata;
+-  assign io_lsu_respValid =
+-    _io_lsu_respValid_T & io_master_rvalid | io_master_bready_0 & io_master_bvalid;
+-  assign io_master_awvalid =
+-    |{_io_master_wvalid_T & isValidStore,
+-      _io_master_awvalid_T_3,
+-      _io_master_awvalid_T_2};
+-  assign io_master_awid = 4'h0;
+-  assign io_master_awaddr = io_lsu_addr;
+-  assign io_master_awlen = 8'h0;
+-  assign io_master_awsize = {1'h0, io_lsu_size};
+-  assign io_master_awburst = 2'h0;
+-  assign io_master_wvalid = _io_master_wvalid_T & isValidStore | _io_master_wvalid_T_2;
+-  assign io_master_wdata = io_lsu_wdata;
+-  assign io_master_wstrb = io_lsu_wmask;
+-  assign io_master_wlast = 1'h1;
+-  assign io_master_bready = io_master_bready_0;
+-  assign io_master_arvalid =
+-    _io_master_arvalid_T & io_ifu_reqValid | _io_master_arvalid_T_2 | lsuRead;
+-  assign io_master_arid = 4'h0;
+-  assign io_master_araddr = lsuRead ? io_lsu_addr : io_ifu_addr;
+-  assign io_master_arlen = 8'h0;
+-  assign io_master_arsize = {1'h0, lsuRead ? io_lsu_size : 2'h2};
+-  assign io_master_arburst = 2'h0;
+-  assign io_master_rready = _instReturn_T | _io_lsu_respValid_T;
+-endmodule
+-
+ module CPU(
+   input         clock,
+                 reset,
+@@ -445,90 +299,69 @@ module CPU(
+   output        io_slave_rlast
+ );
+ 
+-  wire [31:0] _bridge_io_ifu_rdata;
+-  wire        _bridge_io_ifu_respValid;
+-  wire [31:0] _bridge_io_lsu_rdata;
+-  wire        _bridge_io_lsu_respValid;
+-  wire [31:0] _cpu_io_ifu_addr;
+-  wire        _cpu_io_ifu_reqValid;
+-  wire [31:0] _cpu_io_lsu_addr;
+-  wire        _cpu_io_lsu_reqValid;
+-  wire [1:0]  _cpu_io_lsu_size;
+-  wire        _cpu_io_lsu_wen;
+-  wire [31:0] _cpu_io_lsu_wdata;
+-  wire [3:0]  _cpu_io_lsu_wmask;
+   ysyx_00000000 cpu (
+-    .clock            (clock),
+-    .reset            (reset),
+-    .io_ifu_addr      (_cpu_io_ifu_addr),
+-    .io_ifu_reqValid  (_cpu_io_ifu_reqValid),
+-    .io_ifu_rdata     (_bridge_io_ifu_rdata),
+-    .io_ifu_respValid (_bridge_io_ifu_respValid),
+-    .io_lsu_addr      (_cpu_io_lsu_addr),
+-    .io_lsu_reqValid  (_cpu_io_lsu_reqValid),
+-    .io_lsu_rdata     (_bridge_io_lsu_rdata),
+-    .io_lsu_respValid (_bridge_io_lsu_respValid),
+-    .io_lsu_size      (_cpu_io_lsu_size),
+-    .io_lsu_wen       (_cpu_io_lsu_wen),
+-    .io_lsu_wdata     (_cpu_io_lsu_wdata),
+-    .io_lsu_wmask     (_cpu_io_lsu_wmask)
++    .clock              (clock),
++    .reset              (reset),
++    .io_interrupt       (io_interrupt),
++    .io_master_awready  (auto_master_out_awready),
++    .io_master_awvalid  (auto_master_out_awvalid),
++    .io_master_awaddr   (auto_master_out_awaddr),
++    .io_master_awid     (auto_master_out_awid),
++    .io_master_awlen    (auto_master_out_awlen),
++    .io_master_awsize   (auto_master_out_awsize),
++    .io_master_awburst  (auto_master_out_awburst),
++    .io_master_wready   (auto_master_out_wready),
++    .io_master_wvalid   (auto_master_out_wvalid),
++    .io_master_wdata    (auto_master_out_wdata),
++    .io_master_wstrb    (auto_master_out_wstrb),
++    .io_master_wlast    (auto_master_out_wlast),
++    .io_master_bready   (auto_master_out_bready),
++    .io_master_bvalid   (auto_master_out_bvalid),
++    .io_master_bresp    (auto_master_out_bresp),
++    .io_master_bid      (auto_master_out_bid),
++    .io_master_arready  (auto_master_out_arready),
++    .io_master_arvalid  (auto_master_out_arvalid),
++    .io_master_araddr   (auto_master_out_araddr),
++    .io_master_arid     (auto_master_out_arid),
++    .io_master_arlen    (auto_master_out_arlen),
++    .io_master_arsize   (auto_master_out_arsize),
++    .io_master_arburst  (auto_master_out_arburst),
++    .io_master_rready   (auto_master_out_rready),
++    .io_master_rvalid   (auto_master_out_rvalid),
++    .io_master_rresp    (auto_master_out_rresp),
++    .io_master_rdata    (auto_master_out_rdata),
++    .io_master_rlast    (auto_master_out_rlast),
++    .io_master_rid      (auto_master_out_rid),
++    .io_slave_awready   (io_slave_awready),
++    .io_slave_awvalid   (io_slave_awvalid),
++    .io_slave_awaddr    (io_slave_awaddr),
++    .io_slave_awid      (io_slave_awid),
++    .io_slave_awlen     (io_slave_awlen),
++    .io_slave_awsize    (io_slave_awsize),
++    .io_slave_awburst   (io_slave_awburst),
++    .io_slave_wready    (io_slave_wready),
++    .io_slave_wvalid    (io_slave_wvalid),
++    .io_slave_wdata     (io_slave_wdata),
++    .io_slave_wstrb     (io_slave_wstrb),
++    .io_slave_wlast     (io_slave_wlast),
++    .io_slave_bready    (io_slave_bready),
++    .io_slave_bvalid    (io_slave_bvalid),
++    .io_slave_bresp     (io_slave_bresp),
++    .io_slave_bid       (io_slave_bid),
++    .io_slave_arready   (io_slave_arready),
++    .io_slave_arvalid   (io_slave_arvalid),
++    .io_slave_araddr    (io_slave_araddr),
++    .io_slave_arid      (io_slave_arid),
++    .io_slave_arlen     (io_slave_arlen),
++    .io_slave_arsize    (io_slave_arsize),
++    .io_slave_arburst   (io_slave_arburst),
++    .io_slave_rready    (io_slave_rready),
++    .io_slave_rvalid    (io_slave_rvalid),
++    .io_slave_rresp     (io_slave_rresp),
++    .io_slave_rdata     (io_slave_rdata),
++    .io_slave_rlast     (io_slave_rlast),
++    .io_slave_rid       (io_slave_rid)
+   );
+-  MemBridge bridge (
+-    .clock                   (clock),
+-    .reset                   (reset),
+-    .io_ifu_addr             (_cpu_io_ifu_addr),
+-    .io_ifu_reqValid         (_cpu_io_ifu_reqValid),
+-    .io_ifu_rdata            (_bridge_io_ifu_rdata),
+-    .io_ifu_respValid        (_bridge_io_ifu_respValid),
+-    .io_lsu_addr             (_cpu_io_lsu_addr),
+-    .io_lsu_reqValid         (_cpu_io_lsu_reqValid),
+-    .io_lsu_rdata            (_bridge_io_lsu_rdata),
+-    .io_lsu_respValid        (_bridge_io_lsu_respValid),
+-    .io_lsu_size             (_cpu_io_lsu_size),
+-    .io_lsu_wen              (_cpu_io_lsu_wen),
+-    .io_lsu_wdata            (_cpu_io_lsu_wdata),
+-    .io_lsu_wmask            (_cpu_io_lsu_wmask),
+-    .io_master_awready      (auto_master_out_awready),
+-    .io_master_awvalid      (auto_master_out_awvalid),
+-    .io_master_awid    (auto_master_out_awid),
+-    .io_master_awaddr  (auto_master_out_awaddr),
+-    .io_master_awlen   (auto_master_out_awlen),
+-    .io_master_awsize  (auto_master_out_awsize),
+-    .io_master_awburst (auto_master_out_awburst),
+-    .io_master_wready       (auto_master_out_wready),
+-    .io_master_wvalid       (auto_master_out_wvalid),
+-    .io_master_wdata   (auto_master_out_wdata),
+-    .io_master_wstrb   (auto_master_out_wstrb),
+-    .io_master_wlast   (auto_master_out_wlast),
+-    .io_master_bready       (auto_master_out_bready),
+-    .io_master_bvalid       (auto_master_out_bvalid),
+-    .io_master_bid     (auto_master_out_bid),
+-    .io_master_bresp   (auto_master_out_bresp),
+-    .io_master_arready      (auto_master_out_arready),
+-    .io_master_arvalid      (auto_master_out_arvalid),
+-    .io_master_arid    (auto_master_out_arid),
+-    .io_master_araddr  (auto_master_out_araddr),
+-    .io_master_arlen   (auto_master_out_arlen),
+-    .io_master_arsize  (auto_master_out_arsize),
+-    .io_master_arburst (auto_master_out_arburst),
+-    .io_master_rready       (auto_master_out_rready),
+-    .io_master_rvalid       (auto_master_out_rvalid),
+-    .io_master_rid     (auto_master_out_rid),
+-    .io_master_rdata   (auto_master_out_rdata),
+-    .io_master_rresp   (auto_master_out_rresp),
+-    .io_master_rlast   (auto_master_out_rlast)
+-  );
+-  assign io_slave_awready = 1'h0;
+-  assign io_slave_wready = 1'h0;
+-  assign io_slave_bvalid = 1'h0;
+-  assign io_slave_bid = 4'h0;
+-  assign io_slave_bresp = 2'h0;
+-  assign io_slave_arready = 1'h0;
+-  assign io_slave_rvalid = 1'h0;
+-  assign io_slave_rid = 4'h0;
+-  assign io_slave_rdata = 32'h0;
+-  assign io_slave_rresp = 2'h0;
+-  assign io_slave_rlast = 1'h0;
+ endmodule
+ 
+ module APBUart16550(
+@@ -584,6 +417,36 @@ module APBSPI(
+   input         spi_bundle_miso
+ );
+ 
++`ifdef FAST_FLASH
++  import "DPI-C" function void flash_write(input int addr, input int data, input int strb);
++
++  wire [31:0] flash_data;
++  wire [31:0] flash_addr = {8'b0, auto_in_paddr[23:2], 2'b0};
++  wire        flash_read_req =
++    auto_in_psel & ~auto_in_penable & ~auto_in_pwrite & (auto_in_paddr > 30'h2FFFFFFF);
++  wire        flash_write_req =
++    auto_in_psel & ~auto_in_penable & auto_in_pwrite & (auto_in_paddr > 30'h2FFFFFFF);
++
++  flash_cmd flash_cmd_i (
++    .clock (clock),
++    .valid (flash_read_req),
++    .cmd   (8'h03),
++    .addr  (flash_addr),
++    .data  (flash_data)
++  );
++
++  always @(posedge clock) begin
++    if (flash_write_req) begin
++      flash_write(flash_addr, auto_in_pwdata, {28'b0, auto_in_pstrb});
++    end
++  end
++
++  assign auto_in_pready = auto_in_penable & auto_in_psel;
++  assign auto_in_prdata = auto_in_paddr > 30'h2FFFFFFF ? flash_data : 32'h0;
++  assign spi_bundle_sck = 1'b0;
++  assign spi_bundle_ss = 8'h0;
++  assign spi_bundle_mosi = 1'b1;
++`else
+   wire        _mspi_in_pready;
+   wire [31:0] _mspi_in_prdata;
+   wire        _mspi_spi_irq_out;
+@@ -716,6 +579,7 @@ module APBSPI(
+          _mspi_in_prdata[23:16],
+          _mspi_in_prdata[31:24]}
+       : _mspi_in_prdata;
++`endif
+ endmodule
+ 
+ module APBSDRAM(
+@@ -1702,6 +1566,29 @@ module ysyxSoCASIC(
+   inout  [15:0] sdram_dq
+ );
+ 
++  import "DPI-C" function void soc_bus_tick(
++    input int reset,
++    input int cpu_reset,
++    input int cpu_arvalid,
++    input int cpu_arready,
++    input int cpu_araddr,
++    input int cpu_rvalid,
++    input int cpu_rready,
++    input int cpu_rdata,
++    input int buf_arvalid,
++    input int buf_arready,
++    input int buf_araddr,
++    input int apb_psel,
++    input int apb_penable,
++    input int apb_pready,
++    input int apb_paddr,
++    input int apb_prdata,
++    input int spi_psel,
++    input int spi_penable,
++    input int spi_pready,
++    input int spi_prdata
++  );
++
+   wire        _cpu_reset_chain_io_q;
+   wire        _axi4buf_auto_in_awready;
+   wire        _axi4buf_auto_in_wready;
+@@ -2182,6 +2069,31 @@ module ysyxSoCASIC(
+     .io_d  (reset),
+     .io_q  (_cpu_reset_chain_io_q)
+   );
++
++  always @(posedge clock) begin
++    soc_bus_tick(
++      {31'b0, reset},
++      {31'b0, _cpu_reset_chain_io_q | reset},
++      {31'b0, _cpu_auto_master_out_arvalid},
++      {31'b0, _axi4xbar_auto_anon_in_arready},
++      _cpu_auto_master_out_araddr,
++      {31'b0, _axi4xbar_auto_anon_in_rvalid},
++      {31'b0, _cpu_auto_master_out_rready},
++      _axi4xbar_auto_anon_in_rdata,
++      {31'b0, _axi4buf_auto_out_arvalid},
++      {31'b0, _axi42apb_auto_in_arready},
++      _axi4buf_auto_out_araddr,
++      {31'b0, _axi42apb_auto_out_psel},
++      {31'b0, _axi42apb_auto_out_penable},
++      {31'b0, _apbdelay_delayer_in_pready},
++      _axi42apb_auto_out_paddr,
++      _apbdelay_delayer_in_prdata,
++      {31'b0, _apbxbar_auto_anon_out_0_psel},
++      {31'b0, _apbxbar_auto_anon_out_0_penable},
++      {31'b0, _lspi_auto_in_pready},
++      _lspi_auto_in_prdata
++    );
++  end
+ endmodule
+ 
+ // VCS coverage exclude_file
+diff --git a/spec/cpu-interface.md b/spec/cpu-interface.md
+old mode 100644
+new mode 100755
+diff --git a/src/CPU.scala b/src/CPU.scala
+old mode 100644
+new mode 100755
+diff --git a/src/SoC.scala b/src/SoC.scala
+old mode 100644
+new mode 100755
+diff --git a/src/Top.scala b/src/Top.scala
+old mode 100644
+new mode 100755
+diff --git a/src/amba/APBDelayer.scala b/src/amba/APBDelayer.scala
+old mode 100644
+new mode 100755
+diff --git a/src/amba/AXI4Delayer.scala b/src/amba/AXI4Delayer.scala
+old mode 100644
+new mode 100755
+diff --git a/src/amba/AXI4ToAPB.scala b/src/amba/AXI4ToAPB.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/Bundles.scala b/src/chiplink/Bundles.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/CAM.scala b/src/chiplink/CAM.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/ChipLink.scala b/src/chiplink/ChipLink.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/Parameters.scala b/src/chiplink/Parameters.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/Partial.scala b/src/chiplink/Partial.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/RX.scala b/src/chiplink/RX.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SinkA.scala b/src/chiplink/SinkA.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SinkB.scala b/src/chiplink/SinkB.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SinkC.scala b/src/chiplink/SinkC.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SinkD.scala b/src/chiplink/SinkD.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SinkE.scala b/src/chiplink/SinkE.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SourceA.scala b/src/chiplink/SourceA.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SourceB.scala b/src/chiplink/SourceB.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SourceC.scala b/src/chiplink/SourceC.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SourceD.scala b/src/chiplink/SourceD.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/SourceE.scala b/src/chiplink/SourceE.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/StuckSnooper.scala b/src/chiplink/StuckSnooper.scala
+old mode 100644
+new mode 100755
+diff --git a/src/chiplink/TX.scala b/src/chiplink/TX.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/BitRev.scala b/src/device/BitRev.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/ChipLinkBridge.scala b/src/device/ChipLinkBridge.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/GPIO.scala b/src/device/GPIO.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/Keyboard.scala b/src/device/Keyboard.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/MROM.scala b/src/device/MROM.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/PSRAM.scala b/src/device/PSRAM.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/SDRAM.scala b/src/device/SDRAM.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/SPI.scala b/src/device/SPI.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/Uart16550.scala b/src/device/Uart16550.scala
+old mode 100644
+new mode 100755
+diff --git a/src/device/VGA.scala b/src/device/VGA.scala
+old mode 100644
+new mode 100755
+diff --git a/src/util/TriState.scala b/src/util/TriState.scala
+old mode 100644
+new mode 100755
+-- 
+2.34.1
+
